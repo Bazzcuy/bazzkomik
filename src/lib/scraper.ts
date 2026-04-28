@@ -158,8 +158,12 @@ export async function getChapter(slug: string) {
     const getPages = $('#Baca_Komik > img');
     obj.chapter_pages = getPages.length;
     getPages.each((i, el) => {
+      let imgSrc = $(el).attr("src");
+      if (imgSrc) {
+        imgSrc = imgSrc.replace('https://i0.wp.com/', '').replace('i0.wp.com/', '');
+      }
       chapter_image.push({
-        chapter_image_link: $(el).attr("src")?.replace('i0.wp.com/', ''),
+        chapter_image_link: imgSrc,
         image_number: i + 1,
       });
     });

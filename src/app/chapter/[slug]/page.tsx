@@ -65,7 +65,7 @@ export default async function ChapterPage({
         {chapter.chapter_image?.map((img: any, idx: number) => (
           <img 
             key={idx}
-            src={`https://i0.wp.com/${img.chapter_image_link}`}
+            src={img.chapter_image_link}
             alt={`Page ${img.image_number}`}
             className="w-full h-auto object-contain min-h-[300px] bg-[#050505] mb-1"
             loading="lazy"
