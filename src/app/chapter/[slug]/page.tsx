@@ -1,6 +1,6 @@
 import { getChapter } from "@/lib/scraper";
 import Link from "next/link";
-import { ArrowLeft, Home } from "lucide-react";
+import { MoveLeft, LayoutGrid } from "lucide-react";
 import HistoryTracker from "@/components/HistoryTracker";
 
 export default async function ChapterPage({
@@ -17,9 +17,11 @@ export default async function ChapterPage({
   
   if (!res.status || !res.data) {
     return (
-      <div className="container mx-auto px-4 py-20 text-center">
-        <h1 className="text-2xl font-bold text-red-500">Chapter tidak ditemukan</h1>
-        <Link href="/" className="text-primary hover:underline mt-4 inline-block">Kembali ke Home</Link>
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="text-center">
+          <h1 className="text-xl font-bold mb-4">Chapter tidak ditemukan</h1>
+          <Link href="/" className="px-6 py-2 bg-muted rounded-full hover:bg-card transition-colors">Kembali ke Beranda</Link>
+        </div>
       </div>
     );
   }
@@ -30,7 +32,7 @@ export default async function ChapterPage({
   const mangaTitle = sParams.title || "Komik";
   
   return (
-    <div className="min-h-screen bg-gray-900 dark:bg-[#0a0a0a] pb-20">
+    <div className="min-h-screen bg-black text-white selection:bg-primary/30 relative">
       <HistoryTracker 
         mangaSlug={mangaSlug} 
         mangaTitle={mangaTitle} 
@@ -38,54 +40,47 @@ export default async function ChapterPage({
         chapterTitle={chapter.title} 
       />
 
-      {/* Chapter Reader Navbar */}
-      <div className="sticky top-0 w-full bg-card/90 backdrop-blur-md border-b border-border z-50 p-4 shadow-lg">
-        <div className="container mx-auto max-w-4xl flex items-center justify-between">
-          <Link href={mangaSlug ? `/manga/${mangaSlug}` : "/"} className="flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-primary transition-colors">
-            <ArrowLeft size={20} />
-            <span className="hidden sm:inline font-medium">Kembali</span>
+      {/* Floating Reader Header (Always visible but subtle) */}
+      <div className="fixed top-4 w-full z-50 px-4 transition-opacity duration-300">
+        <div className="container mx-auto max-w-4xl flex items-center justify-between bg-black/40 hover:bg-black/80 backdrop-blur-md border border-white/10 rounded-2xl p-3 shadow-2xl transition-all">
+          <Link href={mangaSlug ? `/manga/${mangaSlug}` : "/"} className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 transition-colors">
+            <MoveLeft size={18} />
           </Link>
           
-          <h1 className="text-sm md:text-base font-bold text-center truncate max-w-[60%]">
-            {chapter.title}
-          </h1>
-          
-          <div className="text-xs font-medium bg-primary text-white px-3 py-1 rounded-full">
-            {chapter.chapter_pages} Hal
+          <div className="text-center overflow-hidden px-2 opacity-80">
+            <h1 className="text-xs md:text-sm font-bold truncate">
+              {chapter.title}
+            </h1>
+            <p className="text-[10px] text-white/50">{chapter.chapter_pages} Halaman</p>
           </div>
-        </div>
-      </div>
-
-      {/* Reader Options */}
-      <div className="container mx-auto max-w-3xl mt-6 px-4 mb-6">
-        <div className="bg-card border border-border p-3 rounded-xl flex justify-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-          <p>Tips: Gunakan scroll untuk membaca ke bawah.</p>
+          
+          <Link href="/" className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 transition-colors">
+            <LayoutGrid size={18} />
+          </Link>
         </div>
       </div>
 
       {/* Images Container */}
-      <div className="flex flex-col items-center w-full max-w-3xl mx-auto bg-white dark:bg-black min-h-screen">
+      <div className="flex flex-col items-center w-full max-w-3xl mx-auto min-h-screen pt-20 pb-28">
         {chapter.chapter_image?.map((img: any, idx: number) => (
           <img 
             key={idx}
             src={`https://i0.wp.com/${img.chapter_image_link}`}
             alt={`Page ${img.image_number}`}
-            className="w-full h-auto object-contain"
+            className="w-full h-auto object-contain min-h-[300px] bg-[#050505] mb-1"
             loading="lazy"
           />
         ))}
       </div>
 
-      {/* Bottom Navigation */}
-      <div className="fixed bottom-0 w-full bg-card/90 backdrop-blur-md border-t border-border z-50 p-4">
-        <div className="container mx-auto max-w-4xl flex items-center justify-center">
-          <Link 
-            href={mangaSlug ? `/manga/${mangaSlug}` : "/"}
-            className="flex items-center gap-2 bg-primary text-white px-6 py-2 rounded-lg font-bold hover:bg-primary-hover transition-colors shadow-lg"
-          >
-            Selesai Membaca
-          </Link>
-        </div>
+      {/* Floating Reader Footer */}
+      <div className="fixed bottom-6 w-full z-50 px-4 flex justify-center">
+        <Link 
+          href={mangaSlug ? `/manga/${mangaSlug}` : "/"}
+          className="flex items-center gap-2 bg-primary text-black px-8 py-3.5 rounded-full font-extrabold hover:bg-primary-hover transition-all shadow-[0_10px_40px_rgba(250,204,21,0.2)] hover:shadow-[0_10px_50px_rgba(250,204,21,0.4)] hover:-translate-y-1"
+        >
+          Selesai Membaca
+        </Link>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import { getMangaDetail } from "@/lib/scraper";
 import Link from "next/link";
-import { BookOpen, List, Info, User, Tag, Activity } from "lucide-react";
+import { Play, List, Info, User, Tag, Activity, Compass } from "lucide-react";
 import BookmarkButton from "@/components/BookmarkButton";
 
 export default async function MangaDetail({
@@ -14,9 +14,9 @@ export default async function MangaDetail({
   
   if (!res.status || !res.data) {
     return (
-      <div className="container mx-auto px-4 py-20 text-center">
-        <h1 className="text-2xl font-bold text-red-500">Manga tidak ditemukan</h1>
-        <Link href="/" className="text-primary hover:underline mt-4 inline-block">Kembali ke Home</Link>
+      <div className="container mx-auto px-4 py-32 text-center">
+        <h1 className="text-2xl font-bold text-red-500 mb-4">Manga tidak ditemukan</h1>
+        <Link href="/" className="px-6 py-2 bg-muted rounded-full hover:bg-card transition-colors">Kembali ke Beranda</Link>
       </div>
     );
   }
@@ -24,114 +24,106 @@ export default async function MangaDetail({
   const manga = res.data;
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl space-y-8">
+    <div className="container mx-auto px-4 py-8 max-w-5xl space-y-12">
       {/* Header Info */}
-      <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-xl">
-        <div className="md:flex">
-          {/* Thumbnail */}
-          <div className="md:w-1/3 lg:w-1/4 p-6 flex justify-center">
-            <div className="w-full max-w-[240px] aspect-[3/4] rounded-xl overflow-hidden shadow-2xl relative">
-              <img 
-                src={manga.thumb || '/placeholder-manga.jpg'} 
-                alt={manga.title}
-                className="object-cover w-full h-full"
-              />
-              <div className="absolute top-2 right-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded shadow-md uppercase">
-                {manga.type}
-              </div>
+      <div className="flex flex-col md:flex-row gap-8 items-start">
+        {/* Thumbnail */}
+        <div className="w-full md:w-[280px] shrink-0">
+          <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl relative">
+            <img 
+              src={manga.thumb || '/placeholder-manga.jpg'} 
+              alt={manga.title}
+              className="object-cover w-full h-full"
+            />
+            <div className="absolute top-4 left-4 bg-background/90 backdrop-blur-md text-foreground text-xs font-bold px-3 py-1.5 rounded-full shadow-sm uppercase tracking-wider">
+              {manga.type}
             </div>
           </div>
+        </div>
+        
+        {/* Meta Info */}
+        <div className="flex-1 flex flex-col justify-center space-y-6">
+          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">{manga.title}</h1>
           
-          {/* Meta Info */}
-          <div className="md:w-2/3 lg:w-3/4 p-6 md:pl-0 flex flex-col justify-center">
-            <h1 className="text-3xl md:text-4xl font-extrabold mb-4">{manga.title}</h1>
+          <div className="flex flex-wrap gap-2">
+            {manga.genre_list?.map((genre: any, idx: number) => (
+              <span key={idx} className="bg-muted px-4 py-1.5 rounded-full text-xs font-semibold text-muted-foreground hover:text-primary transition-colors cursor-default">
+                {genre.genre_name}
+              </span>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 text-sm py-6 border-y border-border">
+            <div className="space-y-1">
+              <span className="text-muted-foreground flex items-center gap-1.5"><User size={14}/> Author</span>
+              <p className="font-semibold">{manga.author || 'Tidak diketahui'}</p>
+            </div>
+            <div className="space-y-1">
+              <span className="text-muted-foreground flex items-center gap-1.5"><Activity size={14}/> Status</span>
+              <p className="font-semibold">{manga.status || 'Berjalan'}</p>
+            </div>
+            <div className="space-y-1">
+              <span className="text-muted-foreground flex items-center gap-1.5"><Tag size={14}/> Tipe</span>
+              <p className="font-semibold">{manga.type}</p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-4 pt-2">
+            {manga.chapter && manga.chapter.length > 0 && (
+              <Link 
+                href={`/chapter/${manga.chapter[manga.chapter.length - 1].chapter_endpoint}?manga=${slug}&title=${encodeURIComponent(manga.title)}`}
+                className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground font-bold px-8 py-3.5 rounded-full hover:bg-primary-hover transition-all hover:-translate-y-0.5 shadow-lg shadow-primary/20"
+              >
+                <Play size={18} fill="currentColor" />
+                Mulai Membaca
+              </Link>
+            )}
             
-            <div className="flex flex-wrap gap-2 mb-6">
-              {manga.genre_list?.map((genre: any, idx: number) => (
-                <span key={idx} className="bg-background border border-border px-3 py-1 rounded-full text-xs text-gray-500 dark:text-gray-300 font-medium">
-                  {genre.genre_name}
-                </span>
-              ))}
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm mb-6">
-              <div className="flex items-center gap-2">
-                <User size={18} className="text-primary" />
-                <span className="text-gray-500 dark:text-gray-400">Author:</span>
-                <span className="font-semibold">{manga.author || 'Tidak diketahui'}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Activity size={18} className="text-primary" />
-                <span className="text-gray-500 dark:text-gray-400">Status:</span>
-                <span className="font-semibold">{manga.status || 'Berjalan'}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Tag size={18} className="text-primary" />
-                <span className="text-gray-500 dark:text-gray-400">Tipe:</span>
-                <span className="font-semibold">{manga.type}</span>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-4 mt-2">
-              {/* Read Button */}
-              {manga.chapter && manga.chapter.length > 0 && (
-                <Link 
-                  href={`/chapter/${manga.chapter[manga.chapter.length - 1].chapter_endpoint}?manga=${slug}&title=${encodeURIComponent(manga.title)}`}
-                  className="inline-flex items-center justify-center gap-2 bg-primary text-white font-bold px-8 py-3 rounded-xl hover:bg-primary-hover transition-transform hover:scale-105 shadow-lg shadow-primary/20"
-                >
-                  <BookOpen size={20} />
-                  Baca Chapter Awal
-                </Link>
-              )}
-              
-              <BookmarkButton 
-                mangaSlug={slug}
-                mangaTitle={manga.title}
-                thumb={manga.thumb}
-                type={manga.type}
-              />
-            </div>
+            <BookmarkButton 
+              mangaSlug={slug}
+              mangaTitle={manga.title}
+              thumb={manga.thumb}
+              type={manga.type}
+            />
           </div>
         </div>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-8">
+      <div className="grid md:grid-cols-3 gap-12">
         {/* Synopsis */}
-        <div className="md:col-span-2 space-y-4">
-          <div className="bg-card border border-border rounded-2xl p-6 shadow-lg">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <Info className="text-primary" />
-              Sinopsis
-            </h2>
-            <p className="text-gray-700 dark:text-gray-300 leading-relaxed text-sm md:text-base whitespace-pre-line">
-              {manga.synopsis || 'Tidak ada sinopsis untuk komik ini.'}
-            </p>
+        <div className="md:col-span-2 space-y-6">
+          <div className="flex items-center gap-2">
+            <Info className="text-primary" size={24} />
+            <h2 className="text-2xl font-bold tracking-tight">Sinopsis</h2>
           </div>
+          <p className="text-muted-foreground leading-relaxed md:text-lg whitespace-pre-line">
+            {manga.synopsis || 'Tidak ada sinopsis untuk komik ini.'}
+          </p>
         </div>
 
         {/* Chapter List */}
-        <div className="space-y-4">
-          <div className="bg-card border border-border rounded-2xl p-6 shadow-lg">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <List className="text-primary" />
-              Daftar Chapter
-            </h2>
-            <div className="max-h-[500px] overflow-y-auto pr-2 space-y-2">
-              {manga.chapter?.map((ch: any, idx: number) => (
-                <Link 
-                  key={idx}
-                  href={`/chapter/${ch.chapter_endpoint}?manga=${slug}&title=${encodeURIComponent(manga.title)}`}
-                  className="block bg-background border border-border p-3 rounded-lg hover:border-primary hover:text-primary transition-colors flex justify-between items-center group"
-                >
-                  <span className="font-medium text-sm">{ch.chapter_title}</span>
-                  <BookOpen size={16} className="text-gray-400 group-hover:text-primary" />
-                </Link>
-              ))}
-              
-              {(!manga.chapter || manga.chapter.length === 0) && (
-                <p className="text-gray-500 text-sm text-center py-4">Belum ada chapter.</p>
-              )}
-            </div>
+        <div className="space-y-6">
+          <div className="flex items-center gap-2">
+            <List className="text-primary" size={24} />
+            <h2 className="text-2xl font-bold tracking-tight">Daftar Chapter</h2>
+          </div>
+          <div className="max-h-[600px] overflow-y-auto pr-2 space-y-3 no-scrollbar">
+            {manga.chapter?.map((ch: any, idx: number) => (
+              <Link 
+                key={idx}
+                href={`/chapter/${ch.chapter_endpoint}?manga=${slug}&title=${encodeURIComponent(manga.title)}`}
+                className="flex justify-between items-center bg-muted/50 hover:bg-muted p-4 rounded-2xl transition-colors group"
+              >
+                <span className="font-semibold text-sm group-hover:text-primary transition-colors">{ch.chapter_title}</span>
+                <div className="bg-background rounded-full p-2 group-hover:bg-primary group-hover:text-primary-foreground transition-colors shadow-sm">
+                  <Compass size={14} />
+                </div>
+              </Link>
+            ))}
+            
+            {(!manga.chapter || manga.chapter.length === 0) && (
+              <p className="text-muted-foreground text-sm py-4">Belum ada chapter.</p>
+            )}
           </div>
         </div>
       </div>

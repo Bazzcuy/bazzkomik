@@ -30,14 +30,14 @@ export default function BookmarkButton({ mangaSlug, mangaTitle, thumb, type }: B
   return (
     <button 
       onClick={handleToggle}
-      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-colors border ${
+      className={`flex items-center gap-2 px-6 py-3.5 rounded-full font-bold transition-all hover:-translate-y-0.5 ${
         bookmarked 
-          ? "bg-primary text-background border-primary" 
-          : "bg-transparent text-primary border-primary hover:bg-primary hover:text-background"
+          ? "bg-muted text-foreground" 
+          : "bg-background border border-border hover:bg-muted text-foreground"
       }`}
     >
-      <Bookmark size={20} fill={bookmarked ? "currentColor" : "none"} />
-      {bookmarked ? "Tersimpan" : "Simpan Favorit"}
+      <Bookmark size={20} fill={bookmarked ? "currentColor" : "none"} className={bookmarked ? "text-primary" : ""} />
+      {bookmarked ? "Tersimpan" : "Simpan Koleksi"}
     </button>
   );
 }

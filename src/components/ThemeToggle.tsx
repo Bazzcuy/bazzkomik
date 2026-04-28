@@ -2,7 +2,7 @@
 
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { Moon, Sun } from "lucide-react";
+import { Sparkles, Eclipse } from "lucide-react";
 
 export default function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -10,15 +10,16 @@ export default function ThemeToggle() {
 
   useEffect(() => setMounted(true), []);
 
-  if (!mounted) return <div className="w-9 h-9" />; // Placeholder
+  if (!mounted) return <div className="w-9 h-9" />;
 
   return (
     <button
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="p-2 rounded-full hover:bg-card transition-colors flex items-center justify-center"
+      className="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-primary transition-all duration-300"
       aria-label="Toggle Theme"
+      title="Ubah Tema"
     >
-      {theme === "dark" ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} />}
+      {theme === "dark" ? <Sparkles size={18} /> : <Eclipse size={18} />}
     </button>
   );
 }
