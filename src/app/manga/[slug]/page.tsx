@@ -29,11 +29,12 @@ export default async function MangaDetail({
       <div className="flex flex-col md:flex-row gap-8 items-start">
         {/* Thumbnail */}
         <div className="w-full md:w-[280px] shrink-0">
-          <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl relative">
+          <div className="w-full max-w-[240px] aspect-[3/4] rounded-xl overflow-hidden shadow-2xl relative">
             <img 
               src={manga.thumb || '/placeholder-manga.jpg'} 
               alt={manga.title}
               className="object-cover w-full h-full"
+              referrerPolicy="no-referrer"
             />
             <div className="absolute top-4 left-4 bg-background/90 backdrop-blur-md text-foreground text-xs font-bold px-3 py-1.5 rounded-full shadow-sm uppercase tracking-wider">
               {manga.type}

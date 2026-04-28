@@ -94,6 +94,7 @@ export default function InteractiveReader({
             alt={`Page ${img.image_number}`}
             className={`w-full h-auto object-contain ${hasGap ? "mb-3 rounded-lg" : "mb-0"}`}
             loading="lazy"
+            referrerPolicy="no-referrer"
           />
         ))}
       </div>

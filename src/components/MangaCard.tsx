@@ -21,6 +21,7 @@ export default function MangaCard({ title, thumb, endpoint, type, updated_on, ch
           alt={title}
           className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110 group-hover:rotate-1"
           loading="lazy"
+          referrerPolicy="no-referrer"
         />
         
         {/* Play Icon Overlay */}
